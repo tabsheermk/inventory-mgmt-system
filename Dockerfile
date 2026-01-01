@@ -22,7 +22,6 @@ RUN mix deps.compile
 COPY backend .
 COPY --from=frontend-build /app/frontend/dist ./priv/static
 
-RUN mix assets.deploy
 RUN mix compile
 RUN mix release
 
