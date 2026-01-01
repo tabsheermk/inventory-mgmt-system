@@ -3,9 +3,9 @@ import Config
 # Configure your database
 config :backend, Backend.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "Root12#",
   hostname: "localhost",
-  database: "backend_dev",
+  database: "inventory_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
