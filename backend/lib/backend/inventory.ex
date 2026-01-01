@@ -218,5 +218,26 @@ defmodule Backend.Inventory do
     |> Kernel.|||(0)
   end
 
+  def create_inventory_movement(attrs)
+  do
+    Repo.transaction(fn ->
+      current_stock = get_stock(attrs.item_id)
+
+      delta =
+        case attrs.movement_type do
+          "IN" -> attrs.quantity
+          "OUT" -> -attrs.quantity
+          "ADJUSTMENT" -> attrs.quantity
+        end
+
+        if current_stock + delta < 0 do
+          Repo.rollback(:negative_stock)
+        end
+
+        %InventoryMovement{}
+        |> InventoryMovement.changeset(attrs)
+        |> Repo.insert!()
+    end)
+  end
 
 end
