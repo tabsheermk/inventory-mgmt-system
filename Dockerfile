@@ -7,7 +7,7 @@ COPY frontend .
 RUN npm run build
 
 # ---------- Backend build ----------
-FROM hexpm/elixir:1.15-erlang-26-alpine AS backend-build
+FROM hexpm/elixir:1.17.1-erlang-27.3.4.1-alpine-3.23.2 AS backend-build
 WORKDIR /app/backend
 
 RUN apk add --no-cache build-base git
