@@ -15,8 +15,9 @@ defmodule Backend.Inventory.Item do
   @doc false
   def changeset(item, attrs) do
     item
-    |> cast(attrs, [:" name", :sku, :unit])
-    |> validate_required([:" name", :sku, :unit])
+    |> cast(attrs, [:name, :sku, :unit])
+    |> validate_required([:name, :sku, :unit])
+    |> validate_inclusion(:unit, ["pcs", "kg", "litre"])
     |> unique_constraint(:sku)
   end
 end

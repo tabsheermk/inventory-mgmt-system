@@ -15,7 +15,8 @@ defmodule Backend.Inventory.InventoryMovement do
   @doc false
   def changeset(inventory_movement, attrs) do
     inventory_movement
-    |> cast(attrs, [:quantity, :movement_type])
-    |> validate_required([:quantity, :movement_type])
+    |> cast(attrs, [:item_id, :quantity, :movement_type])
+    |> validate_required([:item_id, :quantity, :movement_type])
+    |> validate_inclusion(:movement_type, ["IN", "OUT", "ADJUSTMENT"])
   end
 end
