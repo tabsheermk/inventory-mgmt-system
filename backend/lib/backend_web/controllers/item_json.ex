@@ -12,4 +12,13 @@ defmodule BackendWeb.ItemJSON do
   def index(%{items: items}) do
     items
   end
+
+  def error(%{changeset: changeset}) do
+    %{
+      errors:
+        Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} ->
+          msg
+        end)
+    }
+  end
 end

@@ -11,6 +11,10 @@ defmodule BackendWeb.Router do
     post "/items", ItemController, :create
 
     get "/items", ItemController, :get_items
+
+    post "/inventory_movements", InventoryMovementController, :create
+
+    get "/items/:id/movements", InventoryMovementController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

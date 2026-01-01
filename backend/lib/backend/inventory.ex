@@ -200,44 +200,82 @@ defmodule Backend.Inventory do
 
   # --------- STOCK Calculation ----------
   def get_stock(item_id) do
-    from(m in InventoryMovement, where: m.item_id == ^item_id,
-      select:
+  from(m in InventoryMovement,
+    where: m.item_id == ^item_id,
+    select:
+      coalesce(
         sum(
           fragment(
             """
             CASE
-              WHEN movement_type = 'IN' THEN quantity
-              WHEN movement_type = 'OUT' THEN -quantity
+              WHEN movement_type = 'in' THEN quantity
+              WHEN movement_type = 'out' THEN -quantity
               ELSE quantity
             END
             """
           )
-        )
+        ),
+        0
       )
-    |> Repo.one()
-    || 0
+  )
+  |> Repo.one()
+end
+
+def create_inventory_movement_new(attrs) do
+  Repo.transaction(fn ->
+    item_id = attrs["item_id"]
+    movement_type = attrs["movement_type"]
+    quantity = attrs["quantity"]
+
+    quantity =
+      if is_binary(quantity),
+        do: String.to_integer(quantity),
+        else: quantity
+
+    # Lock item row (always exists)
+    Repo.one!(
+      from i in Item,
+        where: i.id == ^item_id,
+        lock: "FOR UPDATE"
+    )
+
+    current_stock = get_stock(item_id)
+
+    delta =
+      case movement_type do
+        "in" -> quantity
+        "out" -> -quantity
+        "adjustment" -> quantity
+        _ -> raise Ecto.Rollback, :invalid_movement_type
+      end
+
+    if current_stock + delta < 0 || current_stock < 0 do
+      Repo.rollback(:negative_stock)
+    end
+
+    # ONLY reached when stock stays >= 0
+    Repo.insert!(
+      InventoryMovement.changeset(%InventoryMovement{}, attrs)
+    )
+  end)
+  |> case do
+    {:ok, movement} ->
+      {:ok, movement}
+
+    {:error, :negative_stock} ->
+      {:error, :negative_stock}
+
+    {:error, :invalid_movement_type} ->
+      {:error, :invalid_movement_type}
   end
+end
 
-  def create_inventory_movement(attrs)
-  do
-    Repo.transaction(fn ->
-      current_stock = get_stock(attrs.item_id)
-
-      delta =
-        case attrs.movement_type do
-          "IN" -> attrs.quantity
-          "OUT" -> -attrs.quantity
-          "ADJUSTMENT" -> attrs.quantity
-        end
-
-        if current_stock + delta < 0 do
-          Repo.rollback(:negative_stock)
-        end
-
-        %InventoryMovement{}
-        |> InventoryMovement.changeset(attrs)
-        |> Repo.insert!()
-    end)
-  end
+def list_movements_for_item(item_id) do
+  from(m in InventoryMovement,
+    where: m.item_id == ^item_id,
+    order_by: [desc: m.inserted_at]
+  )
+  |> Repo.all()
+end
 
 end

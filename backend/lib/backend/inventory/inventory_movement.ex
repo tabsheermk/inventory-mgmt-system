@@ -7,7 +7,7 @@ defmodule Backend.Inventory.InventoryMovement do
 
   schema "inventory_movements" do
     field :quantity, :integer
-    field :movement_type, Ecto.Enum, values: [:in, :out, :adjustment]
+    field :movement_type, :string
 
     belongs_to :item, Backend.Inventory.Item
 
@@ -18,7 +18,7 @@ defmodule Backend.Inventory.InventoryMovement do
     inventory_movement
     |> cast(attrs, [:item_id, :quantity, :movement_type])
     |> validate_required([:item_id, :quantity, :movement_type])
-    |> validate_number(:quantity, greater_than: 0)
+    |> validate_inclusion(:movement_type, ["in", "out", "adjustment"])
     |> foreign_key_constraint(:item_id)
   end
 end
