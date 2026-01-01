@@ -241,13 +241,15 @@ def create_inventory_movement_new(attrs) do
 
     current_stock = get_stock(item_id)
 
-    delta =
-      case movement_type do
-        "in" -> quantity
-        "out" -> -quantity
-        "adjustment" -> quantity
-        _ -> raise Ecto.Rollback, :invalid_movement_type
-      end
+    if movement_type == "in" && quantity < 0 do
+      Repo.rollback(:invalid_quantity)
+    end
+
+    if movement_type == "out" && quantity > 0 do
+      Repo.rollback(:invalid_quantity)
+    end
+
+    delta = quantity
 
     if current_stock + delta < 0 || current_stock < 0 do
       Repo.rollback(:negative_stock)
@@ -265,8 +267,8 @@ def create_inventory_movement_new(attrs) do
     {:error, :negative_stock} ->
       {:error, :negative_stock}
 
-    {:error, :invalid_movement_type} ->
-      {:error, :invalid_movement_type}
+    {:error, :invalid_quantity} ->
+      {:error, :invalid_quantity}
   end
 end
 

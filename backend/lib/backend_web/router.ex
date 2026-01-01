@@ -5,6 +5,7 @@ defmodule BackendWeb.Router do
     plug :accepts, ["json"]
   end
 
+
   scope "/api", BackendWeb do
     pipe_through :api
 

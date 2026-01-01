@@ -17,10 +17,10 @@ defmodule BackendWeb.InventoryMovementController do
       |> put_status(:unprocessable_entity)
       |> json(%{errors: %{stock: ["cannot go negative"]}})
 
-    {:error, :invalid_movement_type} ->
+    {:error, :invalid_quantity} ->
       conn
       |> put_status(:unprocessable_entity)
-      |> json(%{errors: %{movement_type: ["invalid"]}})
+      |> json(%{errors: %{movement_type: ["invalid quantity, pls crct"]}})
 
     {:error, %Ecto.Changeset{} = changeset} ->
       conn
