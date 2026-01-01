@@ -15,7 +15,7 @@ defmodule BackendWeb.ItemController do
 
       {:error, changeset} ->
         conn
-        |> put_status(:unprocessable_entity)
+        |> put_status(:bad_request)
         |> render(:error, changeset: changeset)
     end
   end
