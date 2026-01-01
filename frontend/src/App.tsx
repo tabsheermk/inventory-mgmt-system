@@ -1,7 +1,6 @@
 import "./App.css";
+import { ItemsPage } from "./pages/ItemsPage";
 
-function App() {
-  return <div className="text-red-500"> Hello, World</div>;
+export default function App() {
+  return <ItemsPage />;
 }
-
-export default App;
