@@ -5,7 +5,7 @@ defmodule Backend.Inventory.Item do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "items" do
-    field :" name", :string
+    field :name, :string
     field :sku, :string
     field :unit, :string
 
