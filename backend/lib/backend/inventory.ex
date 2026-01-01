@@ -6,7 +6,7 @@ defmodule Backend.Inventory do
   import Ecto.Query, warn: false
   alias Backend.Repo
 
-  alias Backend.Inventory.Item
+  alias Backend.Inventory.{Item, InventoryMovement}
 
   @doc """
   Returns the list of items.
@@ -197,4 +197,26 @@ defmodule Backend.Inventory do
   def change_inventory_movement(%InventoryMovement{} = inventory_movement, attrs \\ %{}) do
     InventoryMovement.changeset(inventory_movement, attrs)
   end
+
+  # --------- STOCK Calculation ----------
+  def get_stock(item_id) do
+    from(m in InventoryMovement, where: m.item_id == ^item_id,
+      select:
+        sum(
+          fragment(
+            """
+            CASE
+              WHEN movement_type = 'IN' THEN quantity
+              WHEN movement_type = 'OUT' THEN -quantity
+              ELSE quantity
+            END
+            """
+          )
+        )
+      )
+    |> Repo.one()
+    |> Kernel.|||(0)
+  end
+
+
 end
