@@ -8,4 +8,8 @@ defmodule BackendWeb.ItemJSON do
       inserted_at: item.inserted_at
     }
   end
+
+  def index(%{items: items}) do
+    items
+  end
 end

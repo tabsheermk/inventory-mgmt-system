@@ -13,15 +13,29 @@ defmodule BackendWeb.ItemController do
         |> put_status(:created)
         |> render(:show, item: item)
 
-         {:error, changeset} ->
-      conn
-      |> put_status(:unprocessable_entity)
-      |> render(:error, changeset: changeset)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(:error, changeset: changeset)
     end
-
-
   end
-  defp translate_errors(changeset) do
-    Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} -> msg end)
+
+  # GET /api/items
+  def get_items(conn, _params) do
+  items =
+    Inventory.list_items()
+    |> Enum.map(fn item ->
+      stock = Inventory.get_stock(item.id)
+
+      %{
+        id: item.id,
+        name: item.name,
+        sku: item.sku,
+        unit: item.unit,
+        stock: stock
+      }
+    end)
+
+    render(conn, :index, items: items)
   end
 end

@@ -215,7 +215,7 @@ defmodule Backend.Inventory do
         )
       )
     |> Repo.one()
-    |> Kernel.|||(0)
+    || 0
   end
 
   def create_inventory_movement(attrs)
