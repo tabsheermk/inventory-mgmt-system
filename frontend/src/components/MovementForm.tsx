@@ -12,8 +12,8 @@ export function MovementForm({ itemId }: { itemId: string }) {
       await createMovement({ item_id: itemId, quantity, movement_type: type });
       setQuantity(0);
       setError(null);
-    } catch (err: unknown) {
-      setError(err.message);
+    } catch (err: any) {
+      setError(err.message ?? "An unexpected error occurred");
     }
   }
 
