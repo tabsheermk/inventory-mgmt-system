@@ -209,7 +209,7 @@ defmodule Backend.Inventory do
             """
             CASE
               WHEN movement_type = 'in' THEN quantity
-              WHEN movement_type = 'out' THEN -quantity
+              WHEN movement_type = 'out' THEN quantity
               ELSE quantity
             END
             """
@@ -223,9 +223,9 @@ end
 
 def create_inventory_movement_new(attrs) do
   Repo.transaction(fn ->
-    item_id = attrs["item_id"]
-    movement_type = attrs["movement_type"]
-    quantity = attrs["quantity"]
+    item_id = attrs[:item_id] || attrs["item_id"]
+    movement_type = attrs[:movement_type] || attrs["movement_type"]
+    quantity = attrs[:quantity] || attrs["quantity"]
 
     quantity =
       if is_binary(quantity),
