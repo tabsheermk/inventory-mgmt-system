@@ -6,6 +6,11 @@ defmodule BackendWeb.Router do
   end
 
 
+scope "/", BackendWeb do
+  get "/*path", PageController, :index
+end
+
+
   scope "/api", BackendWeb do
     pipe_through :api
 

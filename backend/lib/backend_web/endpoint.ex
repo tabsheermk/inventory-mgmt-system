@@ -1,6 +1,13 @@
 defmodule BackendWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :backend
 
+plug Plug.Static,
+  at: "/",
+  from: :backend,
+  gzip: false,
+  only: ~w(assets fonts images favicon.ico index.html)
+
+
   plug CORSPlug,
     origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
