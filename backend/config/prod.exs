@@ -12,7 +12,7 @@ import Config
 
 config :backend, BackendWeb.Endpoint,
   url: [host: System.get_env("PHX_HOST"), port: 443],
-  cache_static_manifest: "priv/static/cache_manifest.json",
+  cache_static_manifest: nil,
   server: true
 
 
