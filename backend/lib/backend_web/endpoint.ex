@@ -9,7 +9,7 @@ plug Plug.Static,
 
 
   plug CORSPlug,
-    origin: ["http://localhost:5173"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     headers: ["Authorization", "Content-Type", "Accept"],
     expose: ["Authorization"],

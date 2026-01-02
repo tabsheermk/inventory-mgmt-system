@@ -1,4 +1,4 @@
-const API_URL = "/api";
+const API_URL = "https://inventory-mgmt-system.onrender.com/api";
 
 export async function api<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
